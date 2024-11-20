@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>TPS</title>
+
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
+    <!-- Custom CSS -->
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-image: url("https://ajeevi.com/wp-content/uploads/2023/06/3.jpg"); /* Background image for the body */
+        background-size: cover;
+        background-attachment: fixed;
+        background-position: center;
+        color: #bf0b0b;
+      }
+
+      .navbar {
+        background-color: #181818;
+      }
+
+      .navbar-brand {
+        color: #ebd8d8;
+        font-weight: bold;
+        font-size: 24px;
+      }
+
+      .navbar-nav .nav-link {
+        color: #a00f0f;
+      }
+
+      /* Hero section */
+      .hero {
+        background: url("https://source.unsplash.com/1600x400/?parking")
+          no-repeat center center;
+        background-size: cover;
+        height: 400px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+      }
+
+      .hero h1 {
+        color: #0d6c92;
+        font-size: 48px;
+        background: rgba(0, 0, 0, 0.5);
+        padding: 10px 20px;
+        border-radius: 5px;
+      }
+
+      /* Main content section */
+      .content {
+        background-color: rgba(
+          255,
+          255,
+          255,
+          0.85
+        ); /* Slight transparency to the content box */
+        padding: 40px;
+        border-radius: 10px;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        margin-top: 20px;
+      }
+
+      .footer {
+        background-color: #343a40;
+        color: #ffffff;
+        padding: 10px 0;
+        text-align: center;
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+      }
+
+      .alert-container {
+        margin-bottom: 20px;
+      }
+
+      .btn-custom {
+        background-color: #343a40;
+        color: white;
+      }
+
+      .btn-custom:hover {
+        background-color: #495057;
+        color: white;
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+      <a class="navbar-brand" href="/">Smart Parking</a>
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-toggle="collapse"
+        data-target="#navbarNav"
+        aria-controls="navbarNav"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ml-auto">
+          {% if current_user.is_authenticated %}
+          <li class="nav-item">
+            <a
+              class="nav-link"
+              href="{% if current_user.is_organizer %}{{ url_for('dashboard_organizer') }}{% else %}{{ url_for('dashboard_user') }}{% endif %}"
+            >
+              Dashboard
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
+          </li>
+          {% else %}
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('login') }}">Login</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('signup_user') }}"
+              >Sign Up as User</a
+            >
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('signup_organizer') }}"
+              >Sign Up as Organizer</a
+            >
+          </li>
+          {% endif %}
+        </ul>
+      </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="hero">
+      <h1>Find & Book Your Parking Spot</h1>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container content">
+      {% with messages = get_flashed_messages(with_categories=true) %} {% if
+      messages %}
+      <div class="alert-container">
+        {% for category, message in messages %}
+        <div class="alert alert-{{ category }}">{{ message }}</div>
+        {% endfor %}
+      </div>
+      {% endif %} {% endwith %}
+
+      <!-- Block to inject content from other pages -->
+      {% block content %} {% endblock %}
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  </body>
+</html>

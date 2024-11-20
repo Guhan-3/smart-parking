@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Add Parking Spot</title>
+
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      #map {
+        height: 400px; /* Set the height of the map */
+        width: 100%; /* Full width */
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container mt-5">
+      <div class="row justify-content-center">
+        <div class="col-md-8">
+          <div class="card">
+            <div class="card-header text-center">
+              <h2>Add Parking Spot</h2>
+            </div>
+            <div class="card-body">
+              <form
+                method="POST"
+                action="{{ url_for('add_parking_spot') }}"
+                onsubmit="return validateLocation()"
+              >
+                <!-- Hidden input for location -->
+                <input type="hidden" name="location" id="location" required />
+
+                <div id="map"></div>
+
+                <button type="submit" class="btn btn-primary btn-block mt-4">
+                  Add Parking Spot
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <!-- Google Maps API -->
+    <script
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAELUWn3Tplw8LrDvAkoBNBo6faHjpYsdI&callback=initMap"
+      async
+      defer
+    ></script>
+
+    <script>
+      let map;
+      let marker;
+
+      function initMap() {
+        // Initialize the map centered at a default location (e.g., New York)
+        const defaultLocation = { lat: 40.7128, lng: -74.006 }; // New York coordinates
+        map = new google.maps.Map(document.getElementById("map"), {
+          zoom: 15,
+          center: defaultLocation,
+        });
+
+        // Create a marker and set its position
+        marker = new google.maps.Marker({
+          position: defaultLocation,
+          map: map,
+          draggable: true, // Make the marker draggable
+        });
+
+        // Add an event listener for when the marker is dragged
+        google.maps.event.addListener(marker, "dragend", function (event) {
+          // Set the hidden input value to the latitude and longitude
+          document.getElementById("location").value =
+            event.latLng.lat() + "," + event.latLng.lng();
+        });
+      }
+
+      // Ensure a location is selected before submitting
+      function validateLocation() {
+        const location = document.getElementById("location").value;
+        if (!location) {
+          alert("Please select a location by dragging the marker.");
+          return false;
+        }
+        return true;
+      }
+
+      // Ensure the map initializes after the DOM is fully loaded
+      document.addEventListener("DOMContentLoaded", function () {
+        initMap();
+      });
+    </script>
+  </body>
+</html>

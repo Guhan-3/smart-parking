@@ -1,0 +1,30 @@
+{% extends 'base.html' %} {% block content %}
+<h2>Welcome, {{ current_user.email }}!</h2>
+
+<h3>Available Land for Parking</h3>
+<ul>
+  <li>Location: 123 Main St - 10 spots available</li>
+  <li>Location: 456 Elm St - 5 spots available</li>
+</ul>
+
+<h3>Add New Parking Spot</h3>
+<form method="POST" action="{{ url_for('add_parking_spot') }}">
+  <input
+    type="text"
+    name="location"
+    placeholder="Location of parking spot"
+    required
+  />
+  <input
+    type="number"
+    name="spots"
+    placeholder="Number of spots available"
+    required
+  />
+  <button type="submit">Add Parking Spot</button>
+</form>
+
+<p>
+  <a href="{{ url_for('edit_profile') }}">Edit Profile</a>
+</p>
+{% endblock %}
