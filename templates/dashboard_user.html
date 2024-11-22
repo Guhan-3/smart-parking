@@ -2,7 +2,6 @@
 <div class="container mt-4">
   <h2>Welcome, {{ current_user.email }}!</h2>
 
-  <!-- Current Bookings Section -->
   <h3>Current Bookings</h3>
   <ul>
     {% if current_user.bookings %} {% for booking in current_user.bookings %}
@@ -12,11 +11,10 @@
     {% endif %}
   </ul>
 
-  <!-- Search Parking Form -->
   <h3 class="mt-4">Search for Available Parking Spots</h3>
   <form method="POST" action="{{ url_for('search_parking') }}">
     {{ form.hidden_tag() }}
-    <!-- CSRF protection -->
+
     <div class="form-group">
       <label for="location">Enter Location</label>
       <input
@@ -33,7 +31,6 @@
     </button>
   </form>
 
-  <!-- Available Parking Spots List -->
   <h3 class="mt-4">Available Parking Spots</h3>
   <ul class="list-group mt-4">
     {% if spots %} {% for spot in spots %}
@@ -47,7 +44,6 @@
     {% endif %}
   </ul>
 
-  <!-- Edit Profile Link -->
   <p class="mt-4">
     <a href="{{ url_for('edit_profile') }}" class="btn btn-secondary"
       >Edit Profile</a

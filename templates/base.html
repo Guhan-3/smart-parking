@@ -6,13 +6,11 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Smart Parking</title>
 
-    <!-- Bootstrap CSS -->
     <link
       href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
       rel="stylesheet"
     />
 
-    <!-- Custom CSS -->
     <style>
       body {
         font-family: Arial, sans-serif;
@@ -81,7 +79,6 @@
   </head>
 
   <body>
-    <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark">
       <a class="navbar-brand" href="{{ url_for('home') }}">Smart Parking</a>
       <button
@@ -128,14 +125,11 @@
       </div>
     </nav>
 
-    <!-- Hero Section -->
     <div class="hero">
       <h1>Find & Book Your Parking Spot</h1>
     </div>
 
-    <!-- Main Content -->
     <div class="container content">
-      <!-- Flash Messages -->
       {% with messages = get_flashed_messages(with_categories=true) %} {% if
       messages %}
       <div class="alert-container">
@@ -143,13 +137,9 @@
         <div class="alert alert-{{ category }}">{{ message }}</div>
         {% endfor %}
       </div>
-      {% endif %} {% endwith %}
-
-      <!-- Dynamic Content -->
-      {% block content %}{% endblock %}
+      {% endif %} {% endwith %} {% block content %}{% endblock %}
     </div>
 
-    <!-- Bootstrap JS and dependencies -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>

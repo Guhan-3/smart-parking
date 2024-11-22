@@ -2,7 +2,6 @@
 <div class="container mt-5">
   <h2 class="text-center">Book Parking Spot</h2>
 
-  <!-- Flash Messages -->
   {% with messages = get_flashed_messages(with_categories=true) %} {% if
   messages %}
   <div class="alert-container mt-4">
@@ -12,7 +11,6 @@
   </div>
   {% endif %} {% endwith %}
 
-  <!-- Parking Spot Details -->
   <div class="card my-3">
     <div class="card-body">
       <p><strong>Location:</strong> {{ spot.location }}</p>
@@ -27,13 +25,11 @@
     </div>
   </div>
 
-  <!-- Booking Form -->
   <form
     method="POST"
     action="{{ url_for('book_parking_spot', spot_id=spot._id) }}"
   >
     {{ form.hidden_tag() }}
-    <!-- CSRF Token -->
 
     <div class="form-group">
       <label for="duration">Duration (hours)</label>

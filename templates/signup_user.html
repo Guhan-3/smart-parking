@@ -2,7 +2,6 @@
 <div class="container mt-5">
   <h2 class="text-center">Sign Up as a User</h2>
 
-  <!-- Flash Messages -->
   {% with messages = get_flashed_messages(with_categories=true) %} {% if
   messages %}
   <div class="alert-container mt-4">
@@ -12,14 +11,12 @@
   </div>
   {% endif %} {% endwith %}
 
-  <!-- Signup Form -->
   <form
     method="POST"
     action="{{ url_for('signup_user') }}"
     class="mt-4 mx-auto"
     style="max-width: 400px"
   >
-    <!-- CSRF protection if using Flask-WTF -->
     {{ form.hidden_tag() }}
 
     <div class="form-group">

@@ -2,7 +2,6 @@
 <div class="container mt-5">
   <h2 class="text-center">Login</h2>
 
-  <!-- Flash Messages -->
   {% with messages = get_flashed_messages(with_categories=true) %} {% if
   messages %}
   <div class="alert-container mt-4">
@@ -12,22 +11,18 @@
   </div>
   {% endif %} {% endwith %}
 
-  <!-- Login Form -->
   <form method="POST" action="{{ url_for('login') }}">
     {{ form.hidden_tag() }}
-    <!-- Include CSRF token -->
 
     <div class="form-group">
       <label for="email">Email</label>
       {{ form.email(class="form-control", placeholder="Enter your email") }}
-      <!-- Correct email field -->
     </div>
 
     <div class="form-group">
       <label for="password">Password</label>
       {{ form.password(class="form-control", placeholder="Enter your password")
       }}
-      <!-- Correct password field -->
     </div>
 
     <button type="submit" class="btn btn-primary btn-block">Login</button>

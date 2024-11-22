@@ -1,127 +1,128 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>Add Parking Spot</title>
+{% extends 'base.html' %} {% block content %}
+<div class="container mt-5">
+  <h2 class="text-center">Add Parking Spot</h2>
 
-    <!-- Bootstrap CSS -->
-    <link
-      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
-    <style>
-      #map {
-        height: 400px; /* Set the height of the map */
-        width: 100%; /* Full width */
-      }
-    </style>
-  </head>
-  <body>
-    <div class="container mt-5">
-      <div class="row justify-content-center">
-        <div class="col-md-8">
-          <div class="card">
-            <div class="card-header text-center">
-              <h2>Add Parking Spot</h2>
-            </div>
-            <div class="card-body">
-              <!-- Form for adding parking spot -->
-              <form
-                method="POST"
-                action="{{ url_for('add_parking_spot') }}"
-                onsubmit="return validateLocation()"
-              >
-                <!-- Hidden input to store location data -->
-                <input type="hidden" name="location" id="location" required />
+  {% with messages = get_flashed_messages(with_categories=true) %} {% if
+  messages %}
+  <div class="alert-container mt-4">
+    {% for category, message in messages %}
+    <div class="alert alert-{{ category }}">{{ message }}</div>
+    {% endfor %}
+  </div>
+  {% endif %} {% endwith %}
 
-                <!-- Google Map -->
-                <div id="map"></div>
+  <form
+    method="POST"
+    action="{{ url_for('add_parking_spot') }}"
+    onsubmit="return validateForm()"
+  >
+    <div class="form-group">
+      <label>Select Input Method:</label>
+      <select
+        id="inputMethod"
+        class="form-control"
+        onchange="toggleInputMethod()"
+      >
+        <option value="manual">Manual Input</option>
+        <option value="map">Add via Map</option>
+      </select>
+    </div>
 
-                <!-- Submit Button -->
-                <button type="submit" class="btn btn-primary btn-block mt-4">
-                  Add Parking Spot
-                </button>
-              </form>
-
-              <!-- Display existing parking spots -->
-              {% if parking_spots %}
-              <div class="mt-4">
-                <h5 class="text-center">Existing Parking Spots</h5>
-                <ul class="list-group">
-                  {% for spot in parking_spots %}
-                  <li class="list-group-item">
-                    Location: {{ spot.location }} {% if spot.availability %}
-                    <span class="badge badge-success">Available</span>
-                    {% else %}
-                    <span class="badge badge-danger">Unavailable</span>
-                    {% endif %}
-                  </li>
-                  {% endfor %}
-                </ul>
-              </div>
-              {% else %}
-              <p class="text-center mt-4">No parking spots added yet.</p>
-              {% endif %}
-            </div>
-          </div>
-        </div>
+    <div id="manualInput">
+      <div class="form-group">
+        <label for="manual_lat">Latitude</label>
+        <input
+          type="text"
+          class="form-control"
+          id="manual_lat"
+          name="manual_lat"
+          placeholder="Enter latitude"
+        />
+      </div>
+      <div class="form-group">
+        <label for="manual_lng">Longitude</label>
+        <input
+          type="text"
+          class="form-control"
+          id="manual_lng"
+          name="manual_lng"
+          placeholder="Enter longitude"
+        />
       </div>
     </div>
 
-    <!-- Bootstrap JS and dependencies -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <div id="mapInput" style="display: none">
+      <input type="hidden" name="map_location" id="map_location" />
+      <div id="map" style="height: 400px; width: 100%"></div>
+    </div>
 
-    <!-- Google Maps API -->
-    <script
-      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAELUWn3Tplw8LrDvAkoBNBo6faHjpYsdI&callback=initMap"
-      async
-      defer
-    ></script>
+    <button type="submit" class="btn btn-primary btn-block mt-4">
+      Add Parking Spot
+    </button>
+  </form>
+</div>
 
-    <script>
-      let map;
-      let marker;
+<script>
+  let map, marker;
 
-      function initMap() {
-        // Initialize the map centered at a default location
-        const defaultLocation = { lat: 40.7128, lng: -74.006 }; // Example: New York City
-        map = new google.maps.Map(document.getElementById("map"), {
-          zoom: 15,
-          center: defaultLocation,
-        });
+  function initMap() {
+    const defaultLocation = { lat: 40.7128, lng: -74.006 };
 
-        // Marker setup
-        marker = new google.maps.Marker({
-          position: defaultLocation,
-          map: map,
-          draggable: true, // Allow dragging
-        });
+    map = new google.maps.Map(document.getElementById("map"), {
+      zoom: 15,
+      center: defaultLocation,
+    });
 
-        // Update location input when marker is dragged
-        google.maps.event.addListener(marker, "dragend", function (event) {
-          document.getElementById("location").value =
-            event.latLng.lat() + "," + event.latLng.lng();
-        });
+    marker = new google.maps.Marker({
+      position: defaultLocation,
+      map: map,
+      draggable: true,
+    });
+
+    google.maps.event.addListener(marker, "dragend", function (event) {
+      document.getElementById(
+        "map_location"
+      ).value = `${event.latLng.lat()},${event.latLng.lng()}`;
+    });
+  }
+
+  function toggleInputMethod() {
+    const method = document.getElementById("inputMethod").value;
+    document.getElementById("manualInput").style.display =
+      method === "manual" ? "block" : "none";
+    document.getElementById("mapInput").style.display =
+      method === "map" ? "block" : "none";
+  }
+
+  function validateForm() {
+    const method = document.getElementById("inputMethod").value;
+
+    if (method === "manual") {
+      const lat = document.getElementById("manual_lat").value;
+      const lng = document.getElementById("manual_lng").value;
+      if (!lat || !lng) {
+        alert("Please fill in both latitude and longitude.");
+        return false;
       }
-
-      // Validate location before form submission
-      function validateLocation() {
-        const location = document.getElementById("location").value;
-        if (!location) {
-          alert("Please select a location by dragging the marker.");
-          return false;
-        }
-        return true;
+    } else if (method === "map") {
+      const mapLocation = document.getElementById("map_location").value;
+      if (!mapLocation) {
+        alert("Please pin a location on the map.");
+        return false;
       }
+    }
 
-      // Initialize map on DOM load
-      document.addEventListener("DOMContentLoaded", function () {
-        initMap();
-      });
-    </script>
-  </body>
-</html>
+    return true;
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    initMap();
+  });
+</script>
+
+<script
+  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAELUWn3Tplw8LrDvAkoBNBo6faHjpYsdI&callback=initMap"
+  async
+  defer
+></script>
+{% endblock %}
