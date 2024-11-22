@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>TPS</title>
+    <title>Smart Parking</title>
 
     <!-- Bootstrap CSS -->
     <link
@@ -16,7 +16,7 @@
     <style>
       body {
         font-family: Arial, sans-serif;
-        background-image: url("https://ajeevi.com/wp-content/uploads/2023/06/3.jpg"); /* Background image for the body */
+        background-image: url("https://ajeevi.com/wp-content/uploads/2023/06/3.jpg");
         background-size: cover;
         background-attachment: fixed;
         background-position: center;
@@ -37,7 +37,6 @@
         color: #a00f0f;
       }
 
-      /* Hero section */
       .hero {
         background: url("https://source.unsplash.com/1600x400/?parking")
           no-repeat center center;
@@ -57,14 +56,8 @@
         border-radius: 5px;
       }
 
-      /* Main content section */
       .content {
-        background-color: rgba(
-          255,
-          255,
-          255,
-          0.85
-        ); /* Slight transparency to the content box */
+        background-color: rgba(255, 255, 255, 0.85);
         padding: 40px;
         border-radius: 10px;
         box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
@@ -84,23 +77,13 @@
       .alert-container {
         margin-bottom: 20px;
       }
-
-      .btn-custom {
-        background-color: #343a40;
-        color: white;
-      }
-
-      .btn-custom:hover {
-        background-color: #495057;
-        color: white;
-      }
     </style>
   </head>
 
   <body>
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark">
-      <a class="navbar-brand" href="/">Smart Parking</a>
+      <a class="navbar-brand" href="{{ url_for('home') }}">Smart Parking</a>
       <button
         class="navbar-toggler"
         type="button"
@@ -118,7 +101,7 @@
           <li class="nav-item">
             <a
               class="nav-link"
-              href="{% if current_user.is_organizer %}{{ url_for('dashboard_organizer') }}{% else %}{{ url_for('dashboard_user') }}{% endif %}"
+              href="{{ url_for('dashboard_organizer') if current_user.is_organizer else url_for('dashboard_user') }}"
             >
               Dashboard
             </a>
@@ -152,6 +135,7 @@
 
     <!-- Main Content -->
     <div class="container content">
+      <!-- Flash Messages -->
       {% with messages = get_flashed_messages(with_categories=true) %} {% if
       messages %}
       <div class="alert-container">
@@ -161,8 +145,13 @@
       </div>
       {% endif %} {% endwith %}
 
-      <!-- Block to inject content from other pages -->
-      {% block content %} {% endblock %}
+      <!-- Dynamic Content -->
+      {% block content %}{% endblock %}
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      <p>&copy; {{ current_year }} Smart Parking. All rights reserved.</p>
     </div>
 
     <!-- Bootstrap JS and dependencies -->

@@ -27,20 +27,43 @@
               <h2>Add Parking Spot</h2>
             </div>
             <div class="card-body">
+              <!-- Form for adding parking spot -->
               <form
                 method="POST"
                 action="{{ url_for('add_parking_spot') }}"
                 onsubmit="return validateLocation()"
               >
-                <!-- Hidden input for location -->
+                <!-- Hidden input to store location data -->
                 <input type="hidden" name="location" id="location" required />
 
+                <!-- Google Map -->
                 <div id="map"></div>
 
+                <!-- Submit Button -->
                 <button type="submit" class="btn btn-primary btn-block mt-4">
                   Add Parking Spot
                 </button>
               </form>
+
+              <!-- Display existing parking spots -->
+              {% if parking_spots %}
+              <div class="mt-4">
+                <h5 class="text-center">Existing Parking Spots</h5>
+                <ul class="list-group">
+                  {% for spot in parking_spots %}
+                  <li class="list-group-item">
+                    Location: {{ spot.location }} {% if spot.availability %}
+                    <span class="badge badge-success">Available</span>
+                    {% else %}
+                    <span class="badge badge-danger">Unavailable</span>
+                    {% endif %}
+                  </li>
+                  {% endfor %}
+                </ul>
+              </div>
+              {% else %}
+              <p class="text-center mt-4">No parking spots added yet.</p>
+              {% endif %}
             </div>
           </div>
         </div>
@@ -64,29 +87,28 @@
       let marker;
 
       function initMap() {
-        // Initialize the map centered at a default location (e.g., New York)
-        const defaultLocation = { lat: 40.7128, lng: -74.006 }; // New York coordinates
+        // Initialize the map centered at a default location
+        const defaultLocation = { lat: 40.7128, lng: -74.006 }; // Example: New York City
         map = new google.maps.Map(document.getElementById("map"), {
           zoom: 15,
           center: defaultLocation,
         });
 
-        // Create a marker and set its position
+        // Marker setup
         marker = new google.maps.Marker({
           position: defaultLocation,
           map: map,
-          draggable: true, // Make the marker draggable
+          draggable: true, // Allow dragging
         });
 
-        // Add an event listener for when the marker is dragged
+        // Update location input when marker is dragged
         google.maps.event.addListener(marker, "dragend", function (event) {
-          // Set the hidden input value to the latitude and longitude
           document.getElementById("location").value =
             event.latLng.lat() + "," + event.latLng.lng();
         });
       }
 
-      // Ensure a location is selected before submitting
+      // Validate location before form submission
       function validateLocation() {
         const location = document.getElementById("location").value;
         if (!location) {
@@ -96,7 +118,7 @@
         return true;
       }
 
-      // Ensure the map initializes after the DOM is fully loaded
+      // Initialize map on DOM load
       document.addEventListener("DOMContentLoaded", function () {
         initMap();
       });

@@ -1,31 +1,57 @@
 {% extends 'base.html' %} {% block content %}
-<h2>Welcome, {{ current_user.email }}!</h2>
+<div class="container mt-4">
+  <h2>Welcome, {{ current_user.email }}!</h2>
 
-<h3>Current Bookings</h3>
-<ul>
-  <li>Booking at 456 Elm St for 2 hours</li>
-  <li>Booking at 789 Maple Ave for 3 hours</li>
-</ul>
+  <!-- Current Bookings Section -->
+  <h3>Current Bookings</h3>
+  <ul>
+    {% if current_user.bookings %} {% for booking in current_user.bookings %}
+    <li>Booking at {{ booking.location }} for {{ booking.duration }} hours</li>
+    {% endfor %} {% else %}
+    <li>No current bookings.</li>
+    {% endif %}
+  </ul>
 
-<h3>Available Parking Spots</h3>
-<form method="POST" action="{{ url_for('search_parking') }}">
-  <input type="text" name="location" placeholder="Enter location" required />
-  <button type="submit">Search for parking spots</button>
-</form>
+  <!-- Search Parking Form -->
+  <h3 class="mt-4">Search for Available Parking Spots</h3>
+  <form method="POST" action="{{ url_for('search_parking') }}">
+    {{ form.hidden_tag() }}
+    <!-- CSRF protection -->
+    <div class="form-group">
+      <label for="location">Enter Location</label>
+      <input
+        type="text"
+        id="location"
+        name="location"
+        class="form-control"
+        placeholder="Enter location"
+        required
+      />
+    </div>
+    <button type="submit" class="btn btn-primary">
+      Search for Parking Spots
+    </button>
+  </form>
 
-<ul class="list-group mt-4">
-  {% if spots %} {% for spot in spots %}
-  <li class="list-group-item">
-    <a href="{{ url_for('book_parking_spot', spot_id=spot.id) }}">
-      Parking Spot at {{ spot.location }}
-    </a>
-  </li>
-  {% endfor %} {% else %}
-  <li class="list-group-item">No available parking spots at the moment.</li>
-  {% endif %}
-</ul>
+  <!-- Available Parking Spots List -->
+  <h3 class="mt-4">Available Parking Spots</h3>
+  <ul class="list-group mt-4">
+    {% if spots %} {% for spot in spots %}
+    <li class="list-group-item">
+      <a href="{{ url_for('book_parking_spot', spot_id=spot._id) }}">
+        Parking Spot at {{ spot.location }}
+      </a>
+    </li>
+    {% endfor %} {% else %}
+    <li class="list-group-item">No available parking spots at the moment.</li>
+    {% endif %}
+  </ul>
 
-<p>
-  <a href="{{ url_for('edit_profile') }}">Edit Profile</a>
-</p>
+  <!-- Edit Profile Link -->
+  <p class="mt-4">
+    <a href="{{ url_for('edit_profile') }}" class="btn btn-secondary"
+      >Edit Profile</a
+    >
+  </p>
+</div>
 {% endblock %}

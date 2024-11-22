@@ -1,30 +1,51 @@
 {% extends 'base.html' %} {% block content %}
-<h2>Welcome, {{ current_user.email }}!</h2>
+<div class="container mt-4">
+  <h2>Welcome, {{ current_user.email }}!</h2>
 
-<h3>Available Land for Parking</h3>
-<ul>
-  <li>Location: 123 Main St - 10 spots available</li>
-  <li>Location: 456 Elm St - 5 spots available</li>
-</ul>
+  <!-- Available Parking Spots Section -->
+  <h3>Available Parking Spots</h3>
+  {% if parking_spots %}
+  <ul class="list-group mt-3">
+    {% for spot in parking_spots %}
+    <li class="list-group-item">
+      <strong>Location:</strong> {{ spot.location }} -
+      <strong>{{ spot.availability|title }}</strong>
+    </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <p class="text-muted mt-3">No parking spots available yet.</p>
+  {% endif %}
 
-<h3>Add New Parking Spot</h3>
-<form method="POST" action="{{ url_for('add_parking_spot') }}">
-  <input
-    type="text"
-    name="location"
-    placeholder="Location of parking spot"
-    required
-  />
-  <input
-    type="number"
-    name="spots"
-    placeholder="Number of spots available"
-    required
-  />
-  <button type="submit">Add Parking Spot</button>
-</form>
+  <!-- Add New Parking Spot Form -->
+  <h3 class="mt-4">Add New Parking Spot</h3>
+  <form method="POST" action="{{ url_for('add_parking_spot') }}">
+    <!-- CSRF protection -->
+    {{ form.hidden_tag() }}
+    <div class="form-group">
+      <label for="location">Location of Parking Spot</label>
+      <input
+        type="text"
+        id="location"
+        name="location"
+        class="form-control"
+        placeholder="Latitude,Longitude (e.g., 40.7128,-74.0060)"
+        required
+      />
+    </div>
+    <button type="submit" class="btn btn-primary">Add Parking Spot</button>
+  </form>
 
-<p>
-  <a href="{{ url_for('edit_profile') }}">Edit Profile</a>
-</p>
+  <!-- Error Messages -->
+  {% if error %}
+  <div class="alert alert-danger mt-3">{{ error }}</div>
+  {% endif %}
+
+  <!-- Profile Edit Link -->
+  <p class="mt-4">
+    <a href="{{ url_for('edit_profile') }}" class="btn btn-secondary"
+      >Edit Profile</a
+    >
+  </p>
+</div>
 {% endblock %}

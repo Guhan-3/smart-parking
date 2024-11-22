@@ -1,13 +1,40 @@
 {% extends 'base.html' %} {% block content %}
-<h2>Login</h2>
-<form method="POST">
-  <input type="email" name="email" placeholder="Email" required />
-  <input type="password" name="password" placeholder="Password" required />
-  <button type="submit">Login</button>
-</form>
-<p>
-  Don't have an account?
-  <a href="{{ url_for('signup_user') }}">Sign Up as User</a> or
-  <a href="{{ url_for('signup_organizer') }}">Sign Up as Organizer</a>
-</p>
+<div class="container mt-5">
+  <h2 class="text-center">Login</h2>
+
+  <!-- Flash Messages -->
+  {% with messages = get_flashed_messages(with_categories=true) %} {% if
+  messages %}
+  <div class="alert-container mt-4">
+    {% for category, message in messages %}
+    <div class="alert alert-{{ category }}">{{ message }}</div>
+    {% endfor %}
+  </div>
+  {% endif %} {% endwith %}
+
+  <!-- Login Form -->
+  <form method="POST" action="{{ url_for('login') }}">
+    {{ form.hidden_tag() }}
+    <!-- Include CSRF token -->
+
+    <div class="form-group">
+      <label for="email">Email</label>
+      {{ form.email(class="form-control", placeholder="Enter your email") }}
+      <!-- Correct email field -->
+    </div>
+
+    <div class="form-group">
+      <label for="password">Password</label>
+      {{ form.password(class="form-control", placeholder="Enter your password")
+      }}
+      <!-- Correct password field -->
+    </div>
+
+    <button type="submit" class="btn btn-primary btn-block">Login</button>
+  </form>
+
+  <p class="text-center mt-3">
+    Don't have an account? <a href="{{ url_for('signup_user') }}">Sign Up</a>
+  </p>
+</div>
 {% endblock %}
